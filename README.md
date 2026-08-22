@@ -1,27 +1,51 @@
-# Openclose Admin Bot — Premium V3
+# Openclose Admin Bot — Premium V4
 
-Telegram admin bot siap Railway 24/7.
+Telegram admin bot production-ready untuk Railway 24/7.
 
-## Fitur utama
-- `/panel` admin panel interaktif
-- Warn permanen SQLite: `/warn`, `/warns`, `/unwarn`
-- `/mute`, `/unmute`, `/kick`, `/ban`, `/unban`
-- Anti-Link + whitelist domain
-- Anti-Spam yang bisa dikonfigurasi
-- Welcome / Goodbye custom
-- `/purge`, `/pin`, `/unpin`
-- `/stats` dan `/modlog`
-- Settings per grup
+## V4 Production Hardening
 
-## Deploy ke Railway
-1. Buat project Railway dari repository ini.
-2. Tambahkan variable `BOT_TOKEN` dengan token dari BotFather.
-3. Tambahkan Railway Volume dengan mount path `/data` agar database SQLite permanen.
-4. Railway membaca `railway.toml` dan menjalankan `python bootstrap.py`.
-5. Pastikan bot versi lokal di PC dimatikan supaya tidak terjadi konflik `getUpdates`.
+- Owner lock: pengaturan sensitif hanya bisa diubah oleh creator/pemilik grup.
+- `/status`: uptime, environment, database, persistent volume, error count.
+- `/version`: versi bot, Python, dan python-telegram-bot.
+- `/audit`: 20 audit log terakhir dengan ID actor/target.
+- `/backup`: snapshot database SQLite untuk global owner.
+- Global error handler lebih kuat dan dapat mengirim alert ke owner bot.
+- Perubahan setting penting dicatat ke audit log.
+- Warn, mute, ban, anti-link, anti-spam, welcome, whitelist, panel admin tetap tersedia.
 
-## Keamanan
-File `.env` dan database lokal tidak disimpan di repository. Jangan pernah commit token bot ke GitHub.
+## Railway Variables
 
-## Catatan paket
-Source V3 tersimpan sebagai package terkompresi yang dipecah di folder `package_parts/`. `bootstrap.py` menyatukan paket, mengekstraknya saat runtime, lalu menjalankan `OpencloseAdminBot/bot.py`. Ini menjaga paket V3 yang sudah diuji tetap identik saat dideploy.
+Wajib:
+
+```text
+BOT_TOKEN=TOKEN_DARI_BOTFATHER
+```
+
+Disarankan untuk V4:
+
+```text
+BOT_OWNER_ID=USER_ID_KAMU
+```
+
+Gunakan `/id` di Telegram untuk melihat User ID. `BOT_OWNER_ID` diperlukan untuk `/backup` dan notifikasi error owner.
+
+## Persistent Database
+
+Attach Railway Volume ke service dengan mount path:
+
+```text
+/data
+```
+
+Bot otomatis menggunakan `/data/bot_data.db` melalui `RAILWAY_VOLUME_MOUNT_PATH`.
+
+## Tes Setelah Deploy
+
+```text
+/version
+/status
+/panel
+/audit
+```
+
+Jangan menjalankan bot lokal dan Railway pada waktu yang sama karena Telegram polling hanya boleh memiliki satu instance aktif untuk token yang sama.
