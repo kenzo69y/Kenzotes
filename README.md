@@ -1,4 +1,4 @@
-# Openclose Admin Bot — Premium V4
+# KENZO ADMIN BOT — Premium V4
 
 Telegram admin bot production-ready untuk Railway 24/7.
 
